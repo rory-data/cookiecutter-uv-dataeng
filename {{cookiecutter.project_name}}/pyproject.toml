@@ -2,7 +2,7 @@
 name = "{{cookiecutter.project_name}}"
 version = "0.0.1"
 description = "{{cookiecutter.project_description}}"
-authors = [{ name = "{{cookiecutter.author}}", email = "{{cookiecutter.email}}" }]
+authors = [{ name = "{{cookiecutter.author}}" }]
 readme = "README.md"
 keywords = ['python']
 requires-python = ">=3.11,<3.13"
@@ -27,16 +27,79 @@ dev = [
     "mypy>=0.991",
     {% if cookiecutter.codecov == 'y' %}"pytest-cov>=4.0.0",{% endif %}
     "ruff>=0.9.2",
-    {% if cookiecutter.mkdocs == 'y' %}"mkdocs>=1.4.2",
+    {% if cookiecutter.mkdocs == 'y' %}
+    "mkdocs>=1.4.2",
     "mkdocs-material>=8.5.10",
-    "mkdocstrings[python]>=0.26.1",{% endif %}
+    "mkdocstrings[python]>=0.26.1",
+    {% endif %}
 ]
 
 
+[tool.uv]
+package = false
+ 
+[tool.ruff]
+# Ruff configuration
+target-version = "py312"
+line-length = 120
+fix = true
+ 
+[tool.ruff.lint]
+select = [
+    "A",   # flake8-builtins
+    "AIR", # Airflow
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "C90", # mccabe
+    "D",   # pydocstyle
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "RUF", # Ruff-specific rules
+    "S",   # flake8-bandit
+    "SIM", # flake8-simplify
+    "UP",  # pyupgrade
+    "W",   # pycodestyle warnings
+]
+ignore = [
+    "C901", # complex-structure (mccabe)
+    "D203", # one-blank-line-before-class (conflicts with D211)
+    "D212", # multi-line-summary-first-line (conflicts with D213)
+    "E501", # line-too-long
+    "F403", # undefined-local-with-import-star
+]
+# Let unfixable automatically be ignored during ruff format
+unfixable = [
+    "F401", # unused-import
+]
+ 
+[tool.ruff.format]
+quote-style = "double"  # like Black, use double quotes for strings.
+indent-style = "space"  # like Black, indent with spaces.
+skip-magic-trailing-comma = false  # like Black, respect magic trailing commas.
+line-ending = "auto"  # like Black, automatically detect the appropriate line ending.
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+ 
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"] # unused import in __init__ files
+"tests/*" = ["S101", "ANN", "S603"] # assert usage and type annotations in tests
+"conftest.py" = [
+    "S101",
+    "ANN",
+] # assert usage and type annotations in pytest config
+ 
+[tool.ruff.lint.isort]
+known-first-party = ["your_package_name"]
+known-third-party = ["pytest", "requests"]
+ 
+[tool.ruff.lint.pydocstyle]
+convention = "google" # Use Google-style docstrings
+ 
 [tool.mypy]
-files = [
-    "{{cookiecutter.project_slug}}"
-]
+# MyPy configuration
+python_version = "3.12"
 disallow_untyped_defs = true
 disallow_any_unimported = true
 no_implicit_optional = true
@@ -44,60 +107,22 @@ check_untyped_defs = true
 warn_return_any = true
 warn_unused_ignores = true
 show_error_codes = true
-
+ 
+# Per-module options
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+ 
+[[tool.mypy.overrides]]
+module = ["pytest.*", "setuptools.*"]
+ignore_missing_imports = true
+ 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-
-[tool.ruff]
-target-version = "py312"
-line-length = 120
-fix = true
-
-[tool.ruff.lint]
-select = [
-    # flake8-2020
-    "YTT",
-    # flake8-bandit
-    "S",
-    # flake8-bugbear
-    "B",
-    # flake8-builtins
-    "A",
-    # flake8-comprehensions
-    "C4",
-    # flake8-debugger
-    "T10",
-    # flake8-simplify
-    "SIM",
-    # isort
-    "I",
-    # mccabe
-    "C90",
-    # pycodestyle
-    "E", "W",
-    # pyflakes
-    "F",
-    # pygrep-hooks
-    "PGH",
-    # pyupgrade
-    "UP",
-    # ruff
-    "RUF",
-    # tryceratops
-    "TRY",
-]
-ignore = [
-    # LineTooLong
-    "E501",
-    # DoNotAssignLambda
-    "E731",
-]
-
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"]
-
-[tool.ruff.format]
-preview = true
+python_files = "test_*.py"
+python_functions = "test_*"
+python_classes = "Test*"
+addopts = "-v --cov=your_package_name --cov-report=term-missing"
 
 {% if cookiecutter.codecov == "y"-%}
 [tool.coverage.report]
