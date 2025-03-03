@@ -1,0 +1,19 @@
+{
+  "project_name": "example-project",
+  "project_slug": "{{cookiecutter.project_name|lower|replace('-', '_')}}",
+  "project_description": "This is a template repository for Python projects that use uv for their dependency management.",
+  "author": "Florian Maas",
+  "author_github_handle": "fpgmaas",
+  "email": "fpgmaas@gmail.com",
+  "codecov": ["y", "n"],
+  "include_astro_cli": "n",
+  "mkdocs": ["y", "n"],
+  "open_source_license": [
+    "MIT license",
+    "BSD license",
+    "ISC license",
+    "Apache Software License 2.0",
+    "GNU General Public License v3",
+    "Not open source"
+  ]
+}

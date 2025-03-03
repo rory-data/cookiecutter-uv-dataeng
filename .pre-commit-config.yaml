@@ -1,0 +1,29 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: "v5.0.0"
+    hooks:
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: debug-statements
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: check-json
+      - id: pretty-format-json
+        args: [--autofix]
+      - id: check-toml
+        exclude: ^{{cookiecutter.project_name}}/
+      - id: check-yaml
+        exclude: ^{{cookiecutter.project_name}}/
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.9.9"
+    hooks:
+      - id: ruff
+        args: [--exit-non-zero-on-fix, --config=pyproject.toml]
+        exclude: ^{{cookiecutter.project_name}}
+      - id: ruff-format
+        args: [--config=pyproject.toml]
+        exclude: ^{{cookiecutter.project_name}}
