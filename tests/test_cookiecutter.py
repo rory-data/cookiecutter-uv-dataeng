@@ -8,7 +8,7 @@ import logging
 import shutil
 import subprocess
 from pathlib import Path
-from typing import dict, list, tuple
+from typing import Dict, List, Tuple
 
 import pytest
 from pytest_cookies.plugin import Cookies

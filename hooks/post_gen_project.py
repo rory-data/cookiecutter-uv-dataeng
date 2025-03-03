@@ -14,7 +14,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Final, list
+from typing import Final, List
 
 # Configure logging
 logging.basicConfig(

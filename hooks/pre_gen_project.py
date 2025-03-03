@@ -10,7 +10,7 @@ import os
 import platform
 import re
 import sys
-from typing import Any, Final, dict
+from typing import Any, Dict, Final
 
 # Configure logging
 logging.basicConfig(
