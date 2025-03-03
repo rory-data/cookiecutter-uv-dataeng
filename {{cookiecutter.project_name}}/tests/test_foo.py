@@ -1,8 +1,10 @@
 """Tests for the foo module."""
 
-from {{cookiecutter.project_slug}}.foo import foo
+import pytest
+from include.foo import foo
 
 
 def test_foo() -> None:
     """Test that the foo function returns its input correctly."""
-    assert foo("foo") == "foo"
+    result = foo("foo")
+    pytest.assume(result == "foo")
