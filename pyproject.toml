@@ -42,7 +42,6 @@ package = false
 target-version = "py311"
 line-length = 120
 fix = true
-format = true
  
 [tool.ruff.lint]
 select = [

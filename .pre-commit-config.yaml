@@ -1,23 +1,81 @@
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: "v5.0.0"
+  - repo: local
     hooks:
       - id: check-case-conflict
-      - id: check-merge-conflict
-      - id: end-of-file-fixer
-      - id: debug-statements
-      - id: mixed-line-ending
-      - id: trailing-whitespace
-      - id: check-added-large-files
-      - id: check-json
-      - id: pretty-format-json
-        args: [--autofix]
-      - id: check-toml
-      - id: check-yaml
+        name: Check case conflict
+        entry: check-case-conflict
+        language: system
+        types: [file]
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.9.9"
-    hooks:
+      - id: check-merge-conflict
+        name: Check merge conflict
+        entry: check-merge-conflict
+        language: system
+        types: [file]
+
+      - id: end-of-file-fixer
+        name: Fix end of files
+        entry: end-of-file-fixer
+        language: system
+        types: [file]
+
+      - id: debug-statements
+        name: Debug statements
+        entry: debug-statement-hook
+        language: system
+        types: [python]
+
+      - id: mixed-line-ending
+        name: Mixed line ending
+        entry: mixed-line-ending
+        language: system
+        types: [text]
+
+      - id: trailing-whitespace
+        name: Trailing whitespace
+        entry: trailing-whitespace-fixer
+        language: system
+        types: [text]
+
+      - id: check-added-large-files
+        name: Check for added large files
+        entry: check-added-large-files
+        language: system
+
+      - id: check-json
+        name: Check JSON
+        entry: check-json
+        language: system
+        types: [json]
+
+      - id: pretty-format-json
+        name: Format JSON
+        entry: pretty-format-json
+        language: system
+        types: [json]
+        args: [--autofix]
+
+      - id: check-toml
+        name: Check TOML
+        entry: check-toml
+        language: system
+        types: [toml]
+
+      - id: check-yaml
+        name: Check YAML
+        entry: check-yaml
+        language: system
+        types: [yaml]
+
       - id: ruff
+        name: ruff
+        entry: ruff
+        language: system
+        types: [python]
         args: [--fix]
+
       - id: ruff-format
+        name: ruff-format
+        entry: ruff format
+        language: system
+        types: [python]
