@@ -8,7 +8,7 @@ of the cookiecutter template without requiring users to remember the full path.
 import logging
 import sys
 from pathlib import Path
-from typing import NoReturn
+from typing import Never
 
 # Configure logging
 logging.basicConfig(
@@ -23,7 +23,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def exit_with_error(message: str, exit_code: int = 1) -> NoReturn:
+def exit_with_error(message: str, exit_code: int = 1) -> Never:
     """Exit the program with an error message.
 
     Args:

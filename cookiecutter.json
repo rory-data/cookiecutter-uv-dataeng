@@ -4,9 +4,18 @@
   "project_description": "This is a template repository for Python projects that use uv for their dependency management.",
   "author": "Rory Purcell-Hewitt",
   "author_github_handle": "rory-data",
-  "codecov": ["y", "n"],
-  "include_astro_cli": "n",
-  "mkdocs": ["y", "n"],
+  "codecov": [
+    "y",
+    "n"
+  ],
+  "include_astro_cli": [
+    "y",
+    "n"
+  ],
+  "mkdocs": [
+    "y",
+    "n"
+  ],
   "open_source_license": [
     "MIT license",
     "BSD license",
@@ -14,5 +23,8 @@
     "Apache Software License 2.0",
     "GNU General Public License v3",
     "Not open source"
-  ]
+  ],
+  "_prompts": {
+    "include_astro_cli": "Do you want to initialise Astro CLI in this project? (y/n):"
+  }
 }

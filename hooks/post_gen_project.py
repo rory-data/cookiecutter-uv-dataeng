@@ -14,7 +14,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Final, List
+from typing import Final
 
 # Configure logging
 logging.basicConfig(
@@ -177,9 +177,6 @@ if __name__ == "__main__":
         case _:
             remove_dir("docs")
             remove_file("mkdocs.yml")
-            # Also remove MkDocs GitHub workflow if GitHub Actions is enabled
-            if "{{cookiecutter.include_github_actions}}" == "y":
-                remove_file(".github/workflows/docs.yml")
 
     # Handle Codecov
     match "{{cookiecutter.codecov}}":
@@ -187,9 +184,6 @@ if __name__ == "__main__":
             pass  # Keep codecov files
         case _:
             remove_file("codecov.yaml")
-            # Only try to remove the workflow file if GitHub Actions is enabled
-            if "{{cookiecutter.include_github_actions}}" == "y":
-                remove_file(".github/workflows/validate-codecov-config.yml")
 
     # Handle Astro CLI initialization
     match ("{{cookiecutter.include_astro_cli}}", operating_system):
