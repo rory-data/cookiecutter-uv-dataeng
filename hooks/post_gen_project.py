@@ -135,12 +135,15 @@ def move_dir(src: str, target: str) -> None:
         logger.error(f"Error moving directory {src} to {target}: {e}")
 
 
-def run_command(command: list[str], check: bool = True) -> subprocess.CompletedProcess | None:
+def run_command(
+    command: list[str], check: bool = True, auto_respond_yes: bool = False
+) -> subprocess.CompletedProcess | None:
     """Run a shell command and handle exceptions.
 
     Args:
         command: List of command and arguments to run.
         check: If True, raises a CalledProcessError if the command fails.
+        auto_respond_yes: If True, automatically responds with 'y' to any prompts.
 
     Returns:
         CompletedProcess instance if successful, None if an error occurred.
@@ -150,13 +153,37 @@ def run_command(command: list[str], check: bool = True) -> subprocess.CompletedP
                                       a non-zero exit code.
     """
     try:
-        return subprocess.run(
-            [sys.executable, "-c", "import sys; print(sys.stdin.read())"],
-            input=shlex.join(command),
-            capture_output=True,
-            text=True,
-            check=check,
-        )
+        if auto_respond_yes:
+            # Use Popen for interactive processes that need input
+            logger.info(f"Running command with auto-yes: {' '.join(command)}")
+            process = subprocess.Popen(
+                command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            stdout, stderr = process.communicate(input="y\n")
+
+            if process.returncode != 0 and check:
+                raise subprocess.CalledProcessError(process.returncode, command, output=stdout, stderr=stderr)
+
+            return subprocess.CompletedProcess(
+                args=command,
+                returncode=process.returncode,
+                stdout=stdout,
+                stderr=stderr,
+            )
+        else:
+            # Standard non-interactive execution
+            logger.info(f"Running command: {' '.join(command)}")
+            return subprocess.run(
+                [sys.executable, "-c", "import sys; print(sys.stdin.read())"],
+                input=shlex.join(command),
+                capture_output=True,
+                text=True,
+                check=check,
+            )
     except subprocess.CalledProcessError as e:
         logger.error(f"Command '{' '.join(command)}' failed with exit code {e.returncode}")
         logger.error(f"Error output: {e.stderr}")
@@ -200,7 +227,9 @@ if __name__ == "__main__":
                             # Initialize Astro project
                             try:
                                 run_command(
-                                    ["astro", "dev", "init", "--name={{cookiecutter.project_name}}"], check=True
+                                    ["astro", "dev", "init", "--name={{cookiecutter.project_name}}"],
+                                    check=True,
+                                    auto_respond_yes=True,
                                 )
                                 logger.info("Successfully initialised Astro project: {{cookiecutter.project_name}}")
                             except subprocess.SubprocessError as e:
