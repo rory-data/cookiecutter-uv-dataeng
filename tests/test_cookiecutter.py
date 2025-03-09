@@ -8,13 +8,21 @@ import logging
 import shutil
 import subprocess
 from pathlib import Path
+from shlex import quote
 from typing import Any
+from unittest.mock import patch
 
 import pytest
 
+from hooks.post_gen_project import run_command  # Replace with the actual module path
 from tests.utils import file_contains_text, is_valid_yaml, run_within_dir
 
 # Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 logger = logging.getLogger(__name__)
 
 
@@ -263,3 +271,86 @@ def test_license_no_license(cookies: Any, tmp_path: Path) -> None:
         except Exception as e:
             logger.error(f"No license test failed: {e}", exc_info=True)
             raise
+
+
+def test_run_command_success() -> None:
+    """Test that run_command returns a CompletedProcess instance on success."""
+    try:
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = subprocess.CompletedProcess(
+                args=["echo", "test"], returncode=0, stdout="test output", stderr=""
+            )
+            result = run_command(["echo", "test"])
+            assert result is not None, "Expected non-None result"
+            assert result.returncode == 0, f"Expected returncode 0, got {result.returncode}"
+            assert result.stdout == "test output", f"Expected 'test output', got '{result.stdout}'"
+            logger.info(f"test_run_command_success passed with output: {result.stdout}")
+    except AssertionError as e:
+        logger.error(f"Assertion failed in test_run_command_success: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error in test_run_command_success: {e}", exc_info=True)
+        raise
+
+
+def test_run_command_failure_check_true() -> None:
+    """Test that run_command raises CalledProcessError when check=True and command fails."""
+    try:
+        with patch("subprocess.run") as mock_run:
+            mock_run.side_effect = subprocess.CalledProcessError(returncode=1, cmd=["false"], stderr="error output")
+            with pytest.raises(subprocess.CalledProcessError) as excinfo:
+                run_command(["false"], check=True)
+            assert excinfo.value.returncode == 1, f"Expected returncode 1, got {excinfo.value.returncode}"
+            logger.info("test_run_command_failure_check_true passed")
+    except AssertionError as e:
+        logger.error(f"Assertion failed in test_run_command_failure_check_true: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error in test_run_command_failure_check_true: {e}", exc_info=True)
+        raise
+
+
+def test_run_command_failure_check_false() -> None:
+    """Test that run_command returns None when check=False and command fails."""
+    try:
+        with patch("subprocess.run") as mock_run:
+            mock_run.side_effect = subprocess.CalledProcessError(returncode=1, cmd=["false"], stderr="error output")
+            result = run_command(["false"], check=False)
+            assert result is None, f"Expected None result, got {result}"
+            logger.info("test_run_command_failure_check_false passed")
+    except AssertionError as e:
+        logger.error(f"Assertion failed in test_run_command_failure_check_false: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error in test_run_command_failure_check_false: {e}", exc_info=True)
+        raise
+
+
+def test_run_command_file_not_found() -> None:
+    """Test that run_command returns None when the command is not found."""
+    try:
+        with patch("subprocess.run", side_effect=FileNotFoundError("Command not found")):
+            result = run_command(["nonexistent_command"])
+            assert result is None, f"Expected None result, got {result}"
+            logger.info("test_run_command_file_not_found passed")
+    except AssertionError as e:
+        logger.error(f"Assertion failed in test_run_command_file_not_found: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error in test_run_command_file_not_found: {e}", exc_info=True)
+        raise
+
+
+def test_run_command_other_exception() -> None:
+    """Test that run_command returns None when other exceptions occur."""
+    try:
+        with patch("subprocess.run", side_effect=ValueError("Some error")):
+            result = run_command(["some_command"])
+            assert result is None, f"Expected None result, got {result}"
+            logger.info("test_run_command_other_exception passed")
+    except AssertionError as e:
+        logger.error(f"Assertion failed in test_run_command_other_exception: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error in test_run_command_other_exception: {e}", exc_info=True)
+        raise

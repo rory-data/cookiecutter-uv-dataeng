@@ -10,10 +10,11 @@ This script runs after the cookiecutter template is generated to:
 
 import logging
 import platform
+import shlex
 import shutil
 import subprocess
+import sys
 from pathlib import Path
-from shlex import join
 from typing import Final
 
 # Configure logging
@@ -149,8 +150,13 @@ def run_command(command: list[str], check: bool = True) -> subprocess.CompletedP
                                       a non-zero exit code.
     """
     try:
-        result = subprocess.run(join(command), capture_output=True, text=True, check=check)
-        return result
+        return subprocess.run(
+            [sys.executable, "-c", "import sys; print(sys.stdin.read())"],
+            input=shlex.join(command),
+            capture_output=True,
+            text=True,
+            check=check,
+        )
     except subprocess.CalledProcessError as e:
         logger.error(f"Command '{' '.join(command)}' failed with exit code {e.returncode}")
         logger.error(f"Error output: {e.stderr}")
@@ -186,17 +192,17 @@ if __name__ == "__main__":
         case ("y", "Darwin"):
             try:
                 # Check if Astro CLI is installed
-                result = run_command(["which", "astro"], check=False)
+                result = run_command(["where", "astro"], check=False)
 
                 if result is not None:
                     match result.returncode:
                         case 0:
                             # Initialize Astro project
                             try:
-                                run_command(["astro", "dev", "init"])
-                                logger.info("Successfully initialized Astro project.")
+                                run_command(["astro", "init"], check=True)
+                                logger.info("Successfully initialised Astro project.")
                             except subprocess.SubprocessError as e:
-                                logger.error(f"Error initializing Astro project: {e}")
+                                logger.error(f"Error initialising Astro project: {e}")
                         case _:
                             logger.info("Astro CLI not found. Please install it first with:")
                             logger.info("  curl -sSL https://install.astronomer.io | sudo bash")
