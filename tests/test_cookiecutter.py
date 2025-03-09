@@ -8,9 +8,9 @@ import logging
 import shutil
 import subprocess
 from pathlib import Path
+from typing import Any
 
 import pytest
-from pytest_cookies.plugin import Cookies, Result
 
 from tests.utils import file_contains_text, is_valid_yaml, run_within_dir
 
@@ -18,7 +18,7 @@ from tests.utils import file_contains_text, is_valid_yaml, run_within_dir
 logger = logging.getLogger(__name__)
 
 
-def assert_project_creation(result: Result, project_name: str) -> None:
+def assert_project_creation(result: Any, project_name: str) -> None:
     """Assert that the project was created successfully."""
     assert result.exit_code == 0, f"Expected exit code 0, got {result.exit_code}"
     assert result.exception is None, f"Expected no exception, got {result.exception}"
@@ -49,7 +49,7 @@ def run_uv_command(project_path: Path, command: list[str]) -> subprocess.Complet
     return result
 
 
-def test_bake_project(cookies: Cookies) -> None:
+def test_bake_project(cookies: Any) -> None:
     """Test that the cookiecutter template bakes successfully."""
     logger.info("Testing basic project generation")
 
@@ -62,7 +62,7 @@ def test_bake_project(cookies: Cookies) -> None:
         raise
 
 
-def test_using_pytest(cookies: Cookies, tmp_path: Path) -> None:
+def test_using_pytest(cookies: Any, tmp_path: Path) -> None:
     """Test that the generated project passes its own tests."""
     logger.info("Testing that generated project passes its own tests")
 
@@ -96,7 +96,7 @@ def test_using_pytest(cookies: Cookies, tmp_path: Path) -> None:
             raise
 
 
-def test_mkdocs(cookies: Cookies, tmp_path: Path) -> None:
+def test_mkdocs(cookies: Any, tmp_path: Path) -> None:
     """Test that MkDocs is set up correctly when mkdocs=y."""
     logger.info("Testing MkDocs setup")
 
@@ -123,7 +123,7 @@ def test_mkdocs(cookies: Cookies, tmp_path: Path) -> None:
             raise
 
 
-def test_not_mkdocs(cookies: Cookies, tmp_path: Path) -> None:
+def test_not_mkdocs(cookies: Any, tmp_path: Path) -> None:
     """Test that MkDocs is not set up when mkdocs=n."""
     logger.info("Testing MkDocs disabled")
 
@@ -152,7 +152,7 @@ def test_not_mkdocs(cookies: Cookies, tmp_path: Path) -> None:
             raise
 
 
-def test_codecov(cookies: Cookies, tmp_path: Path) -> None:
+def test_codecov(cookies: Any, tmp_path: Path) -> None:
     """Test that codecov is set up."""
     logger.info("Testing Codecov setup")
 
@@ -175,7 +175,7 @@ def test_codecov(cookies: Cookies, tmp_path: Path) -> None:
             raise
 
 
-def test_not_codecov(cookies: Cookies, tmp_path: Path) -> None:
+def test_not_codecov(cookies: Any, tmp_path: Path) -> None:
     """Test that codecov is not set up when codecov=n."""
     logger.info("Testing Codecov disabled")
 
@@ -199,7 +199,7 @@ def test_not_codecov(cookies: Cookies, tmp_path: Path) -> None:
 
 
 @pytest.mark.parametrize(
-    "license_type,expected_line_count",
+    ("license_type", "expected_line_count"),
     [
         ("MIT license", 21),
         ("BSD license", 28),
@@ -208,7 +208,7 @@ def test_not_codecov(cookies: Cookies, tmp_path: Path) -> None:
         ("GNU General Public License v3", 674),
     ],
 )
-def test_license_types(cookies: Cookies, tmp_path: Path, license_type: str, expected_line_count: int) -> None:
+def test_license_types(cookies: Any, tmp_path: Path, license_type: str, expected_line_count: int) -> None:
     """Test that the different license types work correctly."""
     logger.info(f"Testing license type: {license_type}")
 
@@ -238,7 +238,7 @@ def test_license_types(cookies: Cookies, tmp_path: Path, license_type: str, expe
             raise
 
 
-def test_license_no_license(cookies: Cookies, tmp_path: Path) -> None:
+def test_license_no_license(cookies: Any, tmp_path: Path) -> None:
     """Test that no license files are created when not open source."""
     logger.info("Testing no license option")
 

@@ -33,8 +33,7 @@ def exit_with_error(message: str, exit_code: int = 1) -> Never:
     Returns:
         This function does not return (NoReturn).
     """
-    logger.error(message)
-    print(f"Error: {message}")
+    logger.error(f"Error: {message}")
     sys.exit(exit_code)
 
 
@@ -111,7 +110,6 @@ def main() -> None:
         # Run cookiecutter with the template
         run_cookiecutter(template_path)
 
-        print("Project generated successfully!")
         logger.info("CLI completed successfully")
     except ImportError as e:
         exit_with_error(str(e))

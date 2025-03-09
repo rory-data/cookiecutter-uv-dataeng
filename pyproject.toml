@@ -29,6 +29,7 @@ dev = [
     "mypy>=0.991",
     "pytest-cov>=4.0.0",
     "ruff>=0.9.2",
+    "types-pyyaml>=6.0.12.20241230",
     "mkdocs>=1.4.2",
     "mkdocs-material>=8.5.10",
     "mkdocstrings[python]>=0.19.0",
@@ -86,6 +87,7 @@ docstring-code-line-length = "dynamic"
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"] # unused import in __init__ files
 "tests/*" = ["S101", "ANN", "S603"] # assert usage and type annotations in tests
+"test_foo.py" = ["S101", "ANN"] # assert usage and type annotations in test_foo.py
 "conftest.py" = [
     "S101",
     "ANN",

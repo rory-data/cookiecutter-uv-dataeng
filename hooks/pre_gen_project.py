@@ -15,10 +15,6 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler("cookiecutter_pre_gen.log", mode="w", encoding="utf-8"),
-    ],
 )
 logger = logging.getLogger(__name__)
 
@@ -75,8 +71,7 @@ def main() -> None:
             f"ERROR: The project name {project_name!r} is not a valid Python module name. "
             "Please do not use a _ and use - instead"
         )
-        logger.error(error_msg)
-        print(error_msg)
+        logger.error(f"Error: {error_msg}")
         # Exit to cancel project
         sys.exit(1)
 
@@ -88,8 +83,7 @@ def main() -> None:
             f"ERROR: The project slug {project_slug!r} is not a valid Python module name. "
             "Please do not use a - and use _ instead"
         )
-        logger.error(error_msg)
-        print(error_msg)
+        logger.error(f"Error: {error_msg}")
         # Exit to cancel project
         sys.exit(1)
 

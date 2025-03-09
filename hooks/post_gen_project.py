@@ -12,8 +12,8 @@ import logging
 import platform
 import shutil
 import subprocess
-import sys
 from pathlib import Path
+from shlex import join
 from typing import Final
 
 # Configure logging
@@ -21,10 +21,6 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler("cookiecutter_post_gen.log", mode="w", encoding="utf-8"),
-    ],
 )
 logger = logging.getLogger(__name__)
 
@@ -153,19 +149,19 @@ def run_command(command: list[str], check: bool = True) -> subprocess.CompletedP
                                       a non-zero exit code.
     """
     try:
-        result = subprocess.run(command, capture_output=True, text=True, check=check)
+        result = subprocess.run(join(command), capture_output=True, text=True, check=check)
         return result
     except subprocess.CalledProcessError as e:
-        print(f"Command '{' '.join(command)}' failed with exit code {e.returncode}")
-        print(f"Error output: {e.stderr}")
+        logger.error(f"Command '{' '.join(command)}' failed with exit code {e.returncode}")
+        logger.error(f"Error output: {e.stderr}")
         if check:
             raise
         return None
     except FileNotFoundError:
-        print(f"Command '{command[0]}' not found")
+        logger.error(f"Command '{command[0]}' not found")
         return None
     except Exception as e:
-        print(f"Error running command '{' '.join(command)}': {e}")
+        logger.error(f"Error running command '{' '.join(command)}': {e}")
         return None
 
 
@@ -198,18 +194,17 @@ if __name__ == "__main__":
                             # Initialize Astro project
                             try:
                                 run_command(["astro", "dev", "init"])
-                                print("Successfully initialized Astro project.")
+                                logger.info("Successfully initialized Astro project.")
                             except subprocess.SubprocessError as e:
-                                print(f"Error initializing Astro project: {e}")
+                                logger.error(f"Error initializing Astro project: {e}")
                         case _:
-                            print("Astro CLI not found. Please install it first with:")
-                            print("  curl -sSL https://install.astronomer.io | sudo bash")
+                            logger.info("Astro CLI not found. Please install it first with:")
+                            logger.info("  curl -sSL https://install.astronomer.io | sudo bash")
             except Exception as e:
-                print(f"Error checking for Astro CLI: {e}")
-                # Don't exit with error as this is optional
+                logger.error(f"Error checking for Astro CLI: {e}")
         case _:
             # For non-macOS or if user opted out
-            print("Skipping Astro CLI initialization...")
+            logger.error("Skipping Astro CLI initialisation...")
 
     # License handling
     license_type: str = "{{cookiecutter.open_source_license}}"
