@@ -51,9 +51,11 @@ select = [
     "F",   # pyflakes
     "I",   # isort
     "N",   # pep8-naming
+    "PT",  # flake8-pytest-style
     "RUF", # Ruff-specific rules
     "S",   # flake8-bandit
     "SIM", # flake8-simplify
+    "T20", # flake8-print
     "UP",  # pyupgrade
     "W",   # pycodestyle warnings
 ]
