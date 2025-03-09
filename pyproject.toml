@@ -45,24 +45,22 @@ fix = true
  
 [tool.ruff.lint]
 select = [
-    "C4",  # flake8-comprehensions
-    "DTZ", # flake8-datetimez
-    "E",   # pycodestyle errors
-    "F",   # pyflakes
-    "I",   # isort
-    "RUF", # Ruff-specific rules
-    "SIM", # flake8-simplify
-    "UP",  # pyupgrade
-    
-]
-extend-select = [
     "A",   # flake8-builtins
     "AIR", # Airflow
     "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
     "C90", # mccabe
     "D",   # pydocstyle
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
     "N",   # pep8-naming
+    "PT",  # flake8-pytest-style
+    "RUF", # Ruff-specific rules
     "S",   # flake8-bandit
+    "SIM", # flake8-simplify
+    "T20", # flake8-print
+    "UP",  # pyupgrade
     "W",   # pycodestyle warnings
 ]
 ignore = [
@@ -76,7 +74,7 @@ ignore = [
 unfixable = [
     "F401", # unused-import
 ]
- 
+
 [tool.ruff.format]
 quote-style = "double"  # like Black, use double quotes for strings.
 indent-style = "space"  # like Black, indent with spaces.
@@ -118,25 +116,11 @@ disallow_untyped_defs = false
  
 [[tool.mypy.overrides]]
 module = ["pytest.*", "setuptools.*"]
-ignore_missing_imports = false
+ignore_missing_imports = true
  
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
 python_functions = "test_*"
 python_classes = "Test*"
-addopts = "-v --cov=your_package_name --cov-report=term-missing"
-
-[tool.coverage.report]
-skip_empty = true
-
-[tool.coverage.run]
-branch = true
-source = ["cookiecutter-uv-dataeng"]
-
-
-
-
-
-
 

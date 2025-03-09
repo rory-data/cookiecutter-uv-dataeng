@@ -1,81 +1,34 @@
 repos:
-  - repo: local
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: "v5.0.0"
     hooks:
-      - id: check-case-conflict
-        name: Check case conflict
-        entry: check-case-conflict
-        language: system
-        types: [file]
-
-      - id: check-merge-conflict
-        name: Check merge conflict
-        entry: check-merge-conflict
-        language: system
-        types: [file]
-
-      - id: end-of-file-fixer
-        name: Fix end of files
-        entry: end-of-file-fixer
-        language: system
-        types: [file]
-
-      - id: debug-statements
-        name: Debug statements
-        entry: debug-statement-hook
-        language: system
-        types: [python]
-
-      - id: mixed-line-ending
-        name: Mixed line ending
-        entry: mixed-line-ending
-        language: system
-        types: [text]
-
-      - id: trailing-whitespace
-        name: Trailing whitespace
-        entry: trailing-whitespace-fixer
-        language: system
-        types: [text]
-
       - id: check-added-large-files
-        name: Check for added large files
-        entry: check-added-large-files
-        language: system
-
+      - id: check-case-conflict
       - id: check-json
-        name: Check JSON
-        entry: check-json
-        language: system
-        types: [json]
-
-      - id: pretty-format-json
-        name: Format JSON
-        entry: pretty-format-json
-        language: system
-        types: [json]
-        args: [--autofix]
-
+      - id: check-merge-conflict
       - id: check-toml
-        name: Check TOML
-        entry: check-toml
-        language: system
-        types: [toml]
-
       - id: check-yaml
-        name: Check YAML
-        entry: check-yaml
-        language: system
-        types: [yaml]
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: name-tests-test
+      - id: pretty-format-json
+        args: [--autofix]
+      - id: trailing-whitespace
 
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.9.10"
+    hooks:
       - id: ruff
-        name: ruff
-        entry: ruff
-        language: system
-        types: [python]
         args: [--fix]
-
       - id: ruff-format
-        name: ruff-format
-        entry: ruff format
-        language: system
-        types: [python]
+
+- repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "v1.15.0" 
+    hooks:
+      - id: mypy
+        args: [--strict, --ignore-missing-imports]
+        exclude: ^tests/  # Adjust if your test directory is different
+        additional_dependencies:
+          - types-requests  # Example: Add any other types-* packages your project needs
+
