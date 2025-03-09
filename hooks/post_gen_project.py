@@ -199,8 +199,10 @@ if __name__ == "__main__":
                         case 0:
                             # Initialize Astro project
                             try:
-                                run_command(["astro", "init"], check=True)
-                                logger.info("Successfully initialised Astro project.")
+                                run_command(
+                                    ["astro", "dev", "init", "--name={{cookiecutter.project_name}}"], check=True
+                                )
+                                logger.info("Successfully initialised Astro project: {{cookiecutter.project_name}}")
                             except subprocess.SubprocessError as e:
                                 logger.error(f"Error initialising Astro project: {e}")
                         case _:
